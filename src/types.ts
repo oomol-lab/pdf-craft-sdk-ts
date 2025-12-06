@@ -41,11 +41,4 @@ export interface ConversionOptions {
      * default: PollingStrategy.Exponential (1.5)
      */
     backoffFactor?: PollingStrategy | number;
-    
-    /** @deprecated Use maxWaitMs instead (seconds) */
-    maxWait?: number;
-    /** @deprecated Use checkIntervalMs instead (seconds) */
-    checkInterval?: number;
-    /** @deprecated Use maxCheckIntervalMs instead (seconds) */
-    maxCheckInterval?: number;
 }

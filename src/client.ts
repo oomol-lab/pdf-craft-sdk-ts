@@ -122,22 +122,13 @@ export class PDFCraftClient {
             maxWaitMs = 7200000,
             checkIntervalMs = 1000,
             maxCheckIntervalMs = 5000,
-            backoffFactor = 1.5,
-            // Fallback for deprecated options
-            maxWait,
-            checkInterval,
-            maxCheckInterval
+            backoffFactor = 1.5
         } = options;
-        
-        // Handle deprecated options if new ones are not provided
-        const finalMaxWaitMs = maxWait ? maxWait * 1000 : maxWaitMs;
-        const finalCheckIntervalMs = checkInterval ? checkInterval * 1000 : checkIntervalMs;
-        const finalMaxCheckIntervalMs = maxCheckInterval ? maxCheckInterval * 1000 : maxCheckIntervalMs;
 
         const taskId = await this.submitConversion(pdfUrl, formatType, model);
 
         if (wait) {
-            return this.waitForCompletion(taskId, formatType, finalMaxWaitMs, finalCheckIntervalMs, finalMaxCheckIntervalMs, backoffFactor);
+            return this.waitForCompletion(taskId, formatType, maxWaitMs, checkIntervalMs, maxCheckIntervalMs, backoffFactor);
         } else {
             return taskId;
         }
