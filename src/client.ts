@@ -66,19 +66,22 @@ export class PDFCraftClient {
      * Poll until conversion completes
      * @param taskId The sessionID of the task
      * @param formatType 'markdown' or 'epub'
-     * @param maxWait Maximum wait time in seconds
-     * @param checkInterval Interval between checks in seconds
+     * @param maxWaitMs Maximum wait time in milliseconds (default: 7200000)
+     * @param checkIntervalMs Initial interval between checks in milliseconds (default: 1000)
+     * @param maxCheckIntervalMs Maximum interval between checks in milliseconds (default: 5000)
+     * @param backoffFactor Factor to increase check interval by (default: 1.5)
      * @returns downloadUrl
      */
     async waitForCompletion(
         taskId: string, 
         formatType: FormatType = FormatType.Markdown, 
-        maxWait: number = 300, 
-        checkInterval: number = 5
+        maxWaitMs: number = 7200000, 
+        checkIntervalMs: number = 1000,
+        maxCheckIntervalMs: number = 5000,
+        backoffFactor: number = 1.5
     ): Promise<string> {
         const startTime = Date.now();
-        const maxWaitMs = maxWait * 1000;
-        const checkIntervalMs = checkInterval * 1000;
+        let currentIntervalMs = checkIntervalMs;
 
         while (Date.now() - startTime < maxWaitMs) {
             const result = await this.getConversionResult(taskId, formatType);
@@ -93,7 +96,10 @@ export class PDFCraftClient {
                 throw new APIError(`Conversion failed: ${result.error || 'Unknown error'}`);
             }
 
-            await new Promise(resolve => setTimeout(resolve, checkIntervalMs));
+            await new Promise(resolve => setTimeout(resolve, currentIntervalMs));
+            
+            // Increase interval for next check, up to maxCheckInterval
+            currentIntervalMs = Math.min(currentIntervalMs * backoffFactor, maxCheckIntervalMs);
         }
 
         throw new TimeoutError("Conversion timeout");
@@ -113,14 +119,25 @@ export class PDFCraftClient {
             formatType = FormatType.Markdown,
             model = "gundam",
             wait = true,
-            maxWait = 300,
-            checkInterval = 5
+            maxWaitMs = 7200000,
+            checkIntervalMs = 1000,
+            maxCheckIntervalMs = 5000,
+            backoffFactor = 1.5,
+            // Fallback for deprecated options
+            maxWait,
+            checkInterval,
+            maxCheckInterval
         } = options;
+        
+        // Handle deprecated options if new ones are not provided
+        const finalMaxWaitMs = maxWait ? maxWait * 1000 : maxWaitMs;
+        const finalCheckIntervalMs = checkInterval ? checkInterval * 1000 : checkIntervalMs;
+        const finalMaxCheckIntervalMs = maxCheckInterval ? maxCheckInterval * 1000 : maxCheckIntervalMs;
 
         const taskId = await this.submitConversion(pdfUrl, formatType, model);
 
         if (wait) {
-            return this.waitForCompletion(taskId, formatType, maxWait, checkInterval);
+            return this.waitForCompletion(taskId, formatType, finalMaxWaitMs, finalCheckIntervalMs, finalMaxCheckIntervalMs, backoffFactor);
         } else {
             return taskId;
         }
