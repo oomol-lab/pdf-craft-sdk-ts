@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build)",
+      "Bash(git add package.json dist/)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nchore: bump version to 0.3.0\nEOF\n\\)\")",
+      "Bash(npm publish)",
+      "Bash(npm whoami)"
+    ]
+  }
+}
