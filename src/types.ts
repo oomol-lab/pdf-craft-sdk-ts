@@ -29,13 +29,19 @@ export interface ConversionOptions {
     formatType?: FormatType;
     model?: string;
     wait?: boolean;
+    /** Whether to process footnotes (default: false) */
+    includesFootnotes?: boolean;
+    /** Whether to ignore PDF parsing errors (default: true) */
+    ignorePdfErrors?: boolean;
+    /** Whether to ignore OCR recognition errors (default: true) */
+    ignoreOcrErrors?: boolean;
     /** Maximum wait time in milliseconds (default: 7200000 - 2 hours) */
     maxWaitMs?: number;
     /** Initial polling interval in milliseconds (default: 1000) */
     checkIntervalMs?: number;
     /** Maximum polling interval in milliseconds (default: 5000) */
     maxCheckIntervalMs?: number;
-    /** 
+    /**
      * Backoff factor for polling interval.
      * Use PollingStrategy enum or provide a custom number.
      * default: PollingStrategy.Exponential (1.5)

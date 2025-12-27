@@ -21,13 +21,26 @@ export class PDFCraftClient {
      * @param pdfUrl URL of the PDF file
      * @param formatType 'markdown' or 'epub'
      * @param model Model to use, default is 'gundam'
+     * @param includesFootnotes Whether to process footnotes, default false
+     * @param ignorePdfErrors Whether to ignore PDF parsing errors, default true
+     * @param ignoreOcrErrors Whether to ignore OCR recognition errors, default true
      * @returns sessionID
      */
-    async submitConversion(pdfUrl: string, formatType: FormatType = FormatType.Markdown, model: string = "gundam"): Promise<string> {
+    async submitConversion(
+        pdfUrl: string,
+        formatType: FormatType = FormatType.Markdown,
+        model: string = "gundam",
+        includesFootnotes: boolean = false,
+        ignorePdfErrors: boolean = true,
+        ignoreOcrErrors: boolean = true
+    ): Promise<string> {
         const endpoint = `${this.baseURL}/pdf-transform-${formatType}/submit`;
         const data = {
             pdfURL: pdfUrl,
-            model: model
+            model: model,
+            includes_footnotes: includesFootnotes,
+            ignore_pdf_errors: ignorePdfErrors,
+            ignore_ocr_errors: ignoreOcrErrors
         };
 
         try {
@@ -107,25 +120,35 @@ export class PDFCraftClient {
 
     /**
      * High-level method to convert PDF.
-     * 
+     *
      * If wait is true (default), submits and waits for completion, returning the download URL.
      * If wait is false, submits and returns the task ID.
      */
     async convert(
-        pdfUrl: string, 
+        pdfUrl: string,
         options: ConversionOptions = {}
     ): Promise<string> {
         const {
             formatType = FormatType.Markdown,
             model = "gundam",
             wait = true,
+            includesFootnotes = false,
+            ignorePdfErrors = true,
+            ignoreOcrErrors = true,
             maxWaitMs = 7200000,
             checkIntervalMs = 1000,
             maxCheckIntervalMs = 5000,
             backoffFactor = 1.5
         } = options;
 
-        const taskId = await this.submitConversion(pdfUrl, formatType, model);
+        const taskId = await this.submitConversion(
+            pdfUrl,
+            formatType,
+            model,
+            includesFootnotes,
+            ignorePdfErrors,
+            ignoreOcrErrors
+        );
 
         if (wait) {
             return this.waitForCompletion(taskId, formatType, maxWaitMs, checkIntervalMs, maxCheckIntervalMs, backoffFactor);
