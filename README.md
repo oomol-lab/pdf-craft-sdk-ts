@@ -76,9 +76,20 @@ async function manualFlow() {
 
 The `convert` method accepts an options object:
 
+#### Basic Options
+
 - `formatType`: FormatType.Markdown | FormatType.EPUB (default: FormatType.Markdown)
 - `model`: Model to use (default: 'gundam')
 - `wait`: Whether to wait for completion (default: true)
+
+#### Processing Options
+
+- `includesFootnotes`: Whether to process footnotes (default: false)
+- `ignorePdfErrors`: Whether to ignore PDF parsing errors. When true, continues processing even if PDF has errors (default: true)
+- `ignoreOcrErrors`: Whether to ignore OCR recognition errors. When true, continues processing other pages even if some OCR fails (default: true)
+
+#### Polling Options
+
 - `maxWaitMs`: Maximum wait time in milliseconds (default: 7200000, i.e., 2 hours)
 - `checkIntervalMs`: Initial polling interval in milliseconds (default: 1000)
 - `maxCheckIntervalMs`: Maximum polling interval in milliseconds (default: 5000)
@@ -86,7 +97,20 @@ The `convert` method accepts an options object:
 
 ### Examples
 
-#### 1. Fast Start (Default)
+#### 1. Processing with Footnotes
+
+Enable footnote processing and strict error handling:
+
+```typescript
+await client.convert(pdfUrl, {
+    includesFootnotes: true,  // Process footnotes
+    ignorePdfErrors: false,   // Fail on PDF errors
+    ignoreOcrErrors: false    // Fail on OCR errors
+});
+```
+
+#### 2. Fast Start (Default)
+
 Starts checking quickly (1s) and gradually slows down to every 5s. Good for most files.
 
 ```typescript
@@ -99,7 +123,8 @@ await client.convert(pdfUrl, {
 });
 ```
 
-#### 2. Stable Polling (Fixed Interval)
+#### 3. Stable Polling (Fixed Interval)
+
 Checks exactly every 3 seconds, no matter how long it takes.
 
 ```typescript
@@ -111,7 +136,8 @@ await client.convert(pdfUrl, {
 });
 ```
 
-#### 3. Long Running Tasks
+#### 4. Long Running Tasks
+
 For very large files, start slow and check infrequently.
 
 ```typescript
