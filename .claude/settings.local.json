@@ -5,7 +5,15 @@
       "Bash(git add package.json dist/)",
       "Bash(git commit -m \"$\\(cat <<''EOF''\nchore: bump version to 0.3.0\nEOF\n\\)\")",
       "Bash(npm publish)",
-      "Bash(npm whoami)"
+      "Bash(npm whoami)",
+      "Bash(git add README.md)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\ndocs: update README with new processing options\n\n- Add Processing Options section documenting includesFootnotes, ignorePdfErrors, and ignoreOcrErrors\n- Add example showing footnote processing and error handling configuration\n- Improve formatting with proper spacing between headings and lists\n- Reorganize configuration options into Basic, Processing, and Polling sections\nEOF\n\\)\")",
+      "Bash(ts-node:*)",
+      "Bash(node -r ts-node/register:*)",
+      "Bash(curl:*)",
+      "Bash(cat:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }
