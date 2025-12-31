@@ -1,7 +1,7 @@
 {
   "name": "pdf-craft-sdk-ts",
-  "version": "0.3.0",
-  "description": "A TypeScript SDK for PDF Craft API",
+  "version": "0.5.0",
+  "description": "A TypeScript SDK for PDF Craft API with local file upload, batch processing, and conversion features",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -10,6 +10,7 @@
   "scripts": {
     "build": "tsc",
     "example": "ts-node examples/demo.ts",
+    "example-zh": "ts-node examples/demo-zh.ts",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
@@ -17,7 +18,11 @@
     "sdk",
     "conversion",
     "markdown",
-    "epub"
+    "epub",
+    "batch",
+    "upload",
+    "file-upload",
+    "progress-tracking"
   ],
   "author": "",
   "license": "MIT",
